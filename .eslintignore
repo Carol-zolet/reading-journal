@@ -1,0 +1,11 @@
+node_modules/
+build/
+dist/
+coverage/
+cypress/
+src_backup/
+*.config.js
+*.config.ts
+public/
+*.min.js
+*.min.css

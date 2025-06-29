@@ -1,0 +1,109 @@
+{
+  "name": "reading-journal",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:single": "cross-env UV_THREADPOOL_SIZE=128 vitest run --max-concurrency=1",
+    "test:ci": "cross-env UV_THREADPOOL_SIZE=128 vitest run --reporter=verbose --coverage",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:ci": "cypress run --headless",
+    "clean": "rm -rf dist coverage .nyc_output",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky install",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:fast": "vitest run --reporter=verbose --no-coverage",
+    "test:debug": "vitest --inspect-brk --inspect --single-thread",
+    "test:e2e": "playwright test",
+    "test:all": "npm run test:run"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^5.15.20",
+    "@mui/material": "^5.15.20",
+    "@mui/x-date-pickers": "^8.5.2",
+    "axios": "^1.10.0",
+    "dayjs": "^1.11.13",
+    "prop-types": "^15.8.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@playwright/test": "^1.53.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "axe-playwright": "^2.1.0",
+    "cross-env": "^7.0.3",
+    "cypress": "^14.5.0",
+    "eslint": "^9.25.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "0.4.19",
+    "globals": "^16.0.0",
+    "happy-dom": "^18.0.1",
+    "husky": "^9.0.11",
+    "jsdom": "^26.1.0",
+    "lint-staged": "^15.2.2",
+    "msw": "^2.10.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.6.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4",
+    "vitest-canvas-mock": "^0.3.3",
+    "vitest-fetch-mock": "^0.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:ci"
+    }
+  },
+  "msw": {
+    "workerDirectory": "public"
+  }
+}
