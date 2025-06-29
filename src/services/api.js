@@ -1,53 +1,62 @@
-import axios from 'axios';
+// src/services/api.js
+import axios from "axios";
 
-const API_URL = 'http://localhost:5000/books';
+// Detectar se estamos em produção (Vercel) ou desenvolvimento
+const isProduction = window.location.hostname !== "localhost";
 
-export const getBooks = async () => {
-  try {
-    const response = await axios.get(API_URL);
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao buscar livros:', error);
-    throw error;
-  }
-};
+// Se estiver em produção, usar API mock
+if (isProduction) {
+  console.log("🌐 Usando API Mock para produção");
+  
+  // Importar funções mock
+  export { getBooks, createBook, updateBook, deleteBook } from "./api-mock.js";
+  
+} else {
+  console.log("🔧 Usando API local para desenvolvimento");
+  
+  // API original para desenvolvimento
+  const api = axios.create({
+    baseURL: "http://localhost:5000",
+    timeout: 10000,
+  });
 
-export const createBook = async (bookData) => {
-  if (!bookData.titulo || !bookData.autor) {
-    throw new Error('Título e autor são obrigatórios');
-  }
-  try {
-    const response = await axios.post(API_URL, bookData);
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao criar livro:', error);
-    throw error;
-  }
-};
+  export const getBooks = async () => {
+    try {
+      const response = await api.get("/books");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar livros:", error);
+      throw error;
+    }
+  };
 
-export const updateBook = async (id, bookData) => {
-  if (!id) {
-    throw new Error('ID do livro é obrigatório para atualização');
-  }
-  try {
-    const dataWithId = { ...bookData, id: parseInt(id) };
-    const response = await axios.put(API_URL + '/' + id, dataWithId);
-    return response.data;
-  } catch (error) {
-    console.error('Erro ao atualizar livro:', error);
-    throw error;
-  }
-};
+  export const createBook = async (bookData) => {
+    try {
+      const response = await api.post("/books", bookData);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao criar livro:", error);
+      throw error;
+    }
+  };
 
-export const deleteBook = async (id) => {
-  if (!id) {
-    throw new Error('ID do livro é obrigatório para exclusão');
-  }
-  try {
-    await axios.delete(API_URL + '/' + id);
-    return true;
-  } catch (error) {
-    console.error('Erro ao deletar livro:', error);
-    return false;
-  }
-};
+  export const updateBook = async (id, bookData) => {
+    try {
+      const response = await api.put(`/books/${id}`, bookData);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao atualizar livro:", error);
+      throw error;
+    }
+  };
+
+  export const deleteBook = async (id) => {
+    try {
+      const response = await api.delete(`/books/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao deletar livro:", error);
+      throw error;
+    }
+  };
+}
