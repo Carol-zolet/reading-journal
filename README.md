@@ -270,4 +270,6 @@ Demonstracoes Incluidas
 ✅ Documentacao tecnica detalhada
 
 
-Desenvolvido por Caroline para a disciplina de Desenvolvimento Frontend - PUCRS
+Desenvolvido por Caroline para a disciplina de Desenvolvimento Frontend - PUCRS# Reading Journal - Sistema de Biblioteca Digital
+
+✅ Versão atualizada - Timestamp: 2024-12-21 16:30
