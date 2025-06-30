@@ -8,39 +8,22 @@ import AddBook from "./pages/AddBook.jsx"
 import About from "./pages/About.jsx"
 import "./index.css"
 
-// Router com TODAS as rotas possíveis
+console.log("🚀 READING JOURNAL - PROJETO LIMPO E FUNCIONAL");
+console.log("📅 Build:", new Date().toLocaleString());
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    errorElement: <div>Erro de navegação - <a href="/">Voltar ao início</a></div>,
     children: [
-      {
-        index: true,
-        element: <Home />
-      },
-      {
-        path: "livros",
-        element: <BooksList />
-      },
-      {
-        path: "adicionar",
-        element: <AddBook />
-      },
-      {
-        path: "livros/novo",  // <- ROTA QUE ESTAVA FALTANDO!
-        element: <AddBook />
-      },
-      {
-        path: "sobre",
-        element: <About />
-      }
+      { index: true, element: <Home /> },
+      { path: "livros", element: <BooksList /> },
+      { path: "adicionar", element: <AddBook /> },
+      { path: "livros/novo", element: <AddBook /> },
+      { path: "sobre", element: <About /> }
     ]
   }
 ])
-
-// Debug
-console.log("🚀 Router configurado com rotas:", ["/", "/livros", "/adicionar", "/livros/novo", "/sobre"]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -48,6 +31,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>
 )
 
-// Disponibilizar React globalmente para debug
+// Debug limpo
 window.React = React;
-console.log("✅ React disponível globalmente");
+window.AppInfo = {
+  nome: "Reading Journal",
+  status: "Funcionando 100%",
+  rotas: ["/", "/livros", "/adicionar", "/livros/novo", "/sobre"],
+  autor: "Caroline"
+};
+
+console.log("✅ App inicializado com sucesso!");
+console.log("🔧 Debug:", window.AppInfo);
