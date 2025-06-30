@@ -1,6 +1,6 @@
-// src/services/api.js - VERSÃO FINAL SEM AXIOS
+// src/services/api.js - VERSÃO ÚNICA E FINAL
 
-console.log("🚀 API Mock Loading - Pure localStorage version");
+console.log("🚀 API Mock Loading - VERSÃO FINAL");
 
 const STORAGE_KEY = "reading_journal_books";
 
@@ -9,20 +9,20 @@ const INITIAL_BOOKS = [
     id: 1,
     titulo: "1984",
     autor: "George Orwell",
-    genero: "Ficção Científica", 
+    genero: "Ficção Científica",
     dataLeitura: "2024-01-15"
   },
   {
     id: 2,
-    titulo: "Dom Casmurro",
+    titulo: "Dom Casmurro", 
     autor: "Machado de Assis",
     genero: "Literatura Brasileira",
     dataLeitura: "2024-02-10"
   },
   {
     id: 3,
-    titulo: "O Senhor dos Anéis", 
-    autor: "J.R.R. Tolkien",
+    titulo: "O Senhor dos Anéis",
+    autor: "J.R.R. Tolkien", 
     genero: "Fantasia",
     dataLeitura: "2024-03-05"
   },
@@ -38,68 +38,58 @@ const INITIAL_BOOKS = [
 // Função para inicializar dados
 const initializeBooks = () => {
   try {
-    let stored = localStorage.getItem(STORAGE_KEY);
-    
-    if (!stored || stored === "null" || stored === "undefined") {
-      console.log("📚 Primeiro acesso - criando dados iniciais");
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored || stored === "null") {
+      console.log("📚 Criando dados iniciais");
       localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BOOKS));
       return INITIAL_BOOKS;
     }
     
     const books = JSON.parse(stored);
-    
     if (!Array.isArray(books) || books.length === 0) {
-      console.log("📚 Array vazio - restaurando dados padrão");
+      console.log("📚 Restaurando dados padrão");
       localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BOOKS));
       return INITIAL_BOOKS;
     }
     
-    console.log(`📚 ${books.length} livros carregados do localStorage`);
+    console.log(`📚 ${books.length} livros carregados`);
     return books;
-    
   } catch (error) {
-    console.error("❌ Erro no localStorage:", error);
-    console.log("🔄 Restaurando dados padrão...");
+    console.error("❌ Erro localStorage:", error);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BOOKS));
     return INITIAL_BOOKS;
   }
 };
 
-// Delay para simular API real
-const delay = (ms = 800) => new Promise(resolve => setTimeout(resolve, ms));
+// Simular delay de rede
+const delay = (ms = 600) => new Promise(resolve => setTimeout(resolve, ms));
 
-// =============== API FUNCTIONS ===============
+// ============== API FUNCTIONS ==============
 
 export const getBooks = async () => {
-  console.log("🔍 getBooks() - Buscando livros...");
-  await delay(500);
-  
+  console.log("🔍 getBooks() - MOCK VERSION");
+  await delay(300);
   const books = initializeBooks();
-  console.log("✅ getBooks() - Retornando:", books.length, "livros");
+  console.log("✅ Retornando", books.length, "livros");
   return books;
 };
 
 export const createBook = async (bookData) => {
-  console.log("➕ createBook() - Dados recebidos:", bookData);
+  console.log("➕ createBook() - MOCK VERSION:", bookData);
   
-  // Validação rigorosa
-  const requiredFields = ['titulo', 'autor', 'genero', 'dataLeitura'];
-  const missingFields = requiredFields.filter(field => !bookData[field] || bookData[field].trim() === '');
-  
-  if (missingFields.length > 0) {
-    const error = new Error(`Campos obrigatórios: ${missingFields.join(', ')}`);
-    console.error("❌ Validação falhou:", error.message);
+  // Validação
+  if (!bookData.titulo || !bookData.autor || !bookData.genero || !bookData.dataLeitura) {
+    const error = new Error("Todos os campos são obrigatórios");
+    console.error("❌ Validação:", error.message);
     throw error;
   }
   
-  await delay(800);
+  await delay(500);
   
   try {
     const books = initializeBooks();
-    
-    // Criar novo livro com ID único
     const newBook = {
-      id: Date.now(), // ID único baseado em timestamp
+      id: Date.now(),
       titulo: bookData.titulo.trim(),
       autor: bookData.autor.trim(),
       genero: bookData.genero.trim(),
@@ -109,81 +99,60 @@ export const createBook = async (bookData) => {
     const updatedBooks = [...books, newBook];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBooks));
     
-    console.log("✅ createBook() - Livro criado:", newBook);
+    console.log("✅ Livro criado - MOCK:", newBook);
     return newBook;
-    
   } catch (error) {
-    console.error("❌ Erro ao criar livro:", error);
-    throw new Error("Falha ao salvar livro. Tente novamente.");
+    console.error("❌ Erro criar:", error);
+    throw new Error("Falha ao salvar livro");
   }
 };
 
 export const updateBook = async (id, bookData) => {
-  console.log("✏️ updateBook() - ID:", id, "Dados:", bookData);
-  await delay(600);
+  console.log("✏️ updateBook() - MOCK VERSION:", id);
+  await delay(400);
   
-  try {
-    const books = initializeBooks();
-    const bookIndex = books.findIndex(book => book.id === parseInt(id));
-    
-    if (bookIndex === -1) {
-      throw new Error("Livro não encontrado");
-    }
-    
-    const updatedBook = {
-      ...books[bookIndex],
-      ...bookData,
-      id: parseInt(id) // Manter ID original
-    };
-    
-    books[bookIndex] = updatedBook;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
-    
-    console.log("✅ updateBook() - Livro atualizado:", updatedBook);
-    return updatedBook;
-    
-  } catch (error) {
-    console.error("❌ Erro ao atualizar livro:", error);
-    throw error;
-  }
+  const books = initializeBooks();
+  const updatedBooks = books.map(book => 
+    book.id === parseInt(id) ? { ...book, ...bookData } : book
+  );
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedBooks));
+  
+  const updated = updatedBooks.find(book => book.id === parseInt(id));
+  console.log("✅ Livro atualizado - MOCK:", updated);
+  return updated;
 };
 
 export const deleteBook = async (id) => {
-  console.log("🗑️ deleteBook() - ID:", id);
-  await delay(400);
+  console.log("🗑️ deleteBook() - MOCK VERSION:", id);
+  await delay(300);
   
-  try {
-    const books = initializeBooks();
-    const filteredBooks = books.filter(book => book.id !== parseInt(id));
-    
-    if (filteredBooks.length === books.length) {
-      throw new Error("Livro não encontrado");
-    }
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredBooks));
-    
-    console.log("✅ deleteBook() - Livro removido com sucesso");
-    return { success: true, message: "Livro removido com sucesso" };
-    
-  } catch (error) {
-    console.error("❌ Erro ao deletar livro:", error);
-    throw error;
-  }
+  const books = initializeBooks();
+  const filteredBooks = books.filter(book => book.id !== parseInt(id));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredBooks));
+  
+  console.log("✅ Livro deletado - MOCK");
+  return { success: true };
 };
 
-// Inicializar ao carregar módulo
-console.log("🚀 API Mock inicializada - Modo: Pure localStorage");
-console.log("🌍 Ambiente:", window.location.hostname === 'localhost' ? 'Desenvolvimento' : 'Produção');
+// Debug global
+if (typeof window !== 'undefined') {
+  window.debugAPI = {
+    getBooks: () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
+    clearBooks: () => localStorage.removeItem(STORAGE_KEY),
+    resetBooks: () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BOOKS));
+      console.log("🔄 Reset completo");
+      window.location.reload();
+    },
+    version: "FINAL_MOCK_ONLY"
+  };
+  console.log("🔧 Debug: window.debugAPI disponível");
+}
+
+// Inicializar
+console.log("🚀 API Mock FINAL inicializada");
+console.log("🌍 Ambiente:", typeof window !== 'undefined' && window.location.hostname);
 initializeBooks();
 
-// Debug helper
-window.debugReadingJournal = {
-  getBooks: () => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'),
-  clearBooks: () => localStorage.removeItem(STORAGE_KEY),
-  resetBooks: () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_BOOKS));
-    console.log("🔄 Dados resetados");
-  }
-};
-
-console.log("🔧 Debug disponível: window.debugReadingJournal");
+// NUNCA usar axios ou fetch para localhost
+console.log("⚠️ ATENÇÃO: Esta versão NUNCA faz requisições HTTP");
